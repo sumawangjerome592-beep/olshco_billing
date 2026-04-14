@@ -1,0 +1,15 @@
+# Ignore sensitive credentials
+.env
+
+# Ignore XAMPP/local dev uploads (use cloud storage or skip in production)
+uploads/*
+!uploads/.gitkeep
+
+# Ignore OS files
+.DS_Store
+Thumbs.db
+
+# Ignore IDE files
+.vscode/
+.idea/
+*.swp
