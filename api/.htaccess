@@ -1,0 +1,39 @@
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+
+    # Redirect HTTP to HTTPS
+    RewriteCond %{HTTP:X-Forwarded-Proto} !https
+    RewriteCond %{HTTPS} off
+    RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+</IfModule>
+
+<IfModule mod_headers.c>
+    # 1. HTTP Strict Transport Security (HSTS)
+    Header always set Strict-Transport-Security "max-age=31536000; includeSubDomains"
+
+    # 2. Content Security Policy (CSP)
+    Header always set Content-Security-Policy "default-src 'self' 'unsafe-inline' 'unsafe-eval' https: data:;"
+
+    # 3. X-Frame-Options
+    Header always set X-Frame-Options "SAMEORIGIN"
+
+    # 4. X-Content-Type-Options
+    Header always set X-Content-Type-Options "nosniff"
+
+    # 5. Referrer-Policy
+    Header always set Referrer-Policy "strict-origin-when-cross-origin"
+
+    # 6. Permissions-Policy
+    Header always set Permissions-Policy "geolocation=(), microphone=(), camera=(), payment=()"
+
+    # 7. Cache Control — override server's no-cache for static assets
+    Header always set Cache-Control "max-age=31536000, public"
+</IfModule>
+
+# Override cache control specifically for HTML/PHP pages
+<FilesMatch "\.(html|htm|php)$">
+    <IfModule mod_headers.c>
+        Header always set Cache-Control "no-store, no-cache, must-revalidate"
+        Header always unset Expires
+    </IfModule>
+</FilesMatch>
